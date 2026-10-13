@@ -20,6 +20,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AActor*> ActorsInside;
+	
+	UFUNCTION(BlueprintCallable , Category = "MyFirstActorTest")
+	void PrintActorsInside();
 
 protected:
 	
@@ -32,6 +37,11 @@ protected:
 
 	UFUNCTION()
 	void OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void OnActorInsideDestroyed(AActor* ActorDestroyed);
+
+	
 
 public:
 	

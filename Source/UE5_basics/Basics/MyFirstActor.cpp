@@ -3,6 +3,9 @@
 
 #include "MyFirstActor.h"
 
+#include <iostream>
+#include <ostream>
+
 // Sets default values
 AMyFirstActor::AMyFirstActor()
 {
@@ -24,6 +27,9 @@ AMyFirstActor::AMyFirstActor()
 void AMyFirstActor::BeginPlay()
 {
 	Super::BeginPlay();
+	UpdateOverlaps();
+	GetOverlappingActors(ActorsInside);
+
 	
 	OnActorBeginOverlap.AddDynamic(this, &AMyFirstActor::OnBeginOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AMyFirstActor::OnEndOverlap);
@@ -45,6 +51,9 @@ void AMyFirstActor::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	{
 		return;
 	}
+
+	OtherActor->OnDestroyed.AddDynamic(this , &AMyFirstActor::OnActorInsideDestroyed);
+	ActorsInside.Add(OtherActor);
 
 	UClass* OtherActorClass = OtherActor->GetClass();
 	for(auto& SensedClass : SensedCharacterClasses)
@@ -78,6 +87,7 @@ void AMyFirstActor::OnEndOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		return;
 	}
 
+	ActorsInside.Remove(OtherActor);
 	UClass* OtherActorClass = OtherActor->GetClass();
 	for(auto& SensedClass : SensedCharacterClasses)
 	{
@@ -114,3 +124,22 @@ void AMyFirstActor::Tick(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(896745, 2.f, FColor::Green, FString::Printf(TEXT("world time: %f"), GetWorld()->TimeSeconds));
 	//GEngine->AddOnScreenDebugMessage(8967444, 2.f, FColor::Blue, "world time: "+FString::SanitizeFloat(GetWorld()->TimeSeconds));
 }
+
+void AMyFirstActor::OnActorInsideDestroyed(AActor* ActorDestroyed)
+{
+	ActorsInside.Remove(ActorDestroyed);
+}
+
+void AMyFirstActor::PrintActorsInside()
+{
+	FString ActorsInsideString = "";
+	for(auto Actor : ActorsInside)
+	{
+		ActorsInsideString += Actor->GetName() + " ";
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Debug ActorsInside: " + ActorsInsideString);
+
+		
+}
+
