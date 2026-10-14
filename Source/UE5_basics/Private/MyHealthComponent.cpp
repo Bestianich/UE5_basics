@@ -28,7 +28,6 @@ void UMyHealthComponent::BeginPlay()
 void UMyHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	
 	if (!AutoRecovery)
 		return;
@@ -39,7 +38,6 @@ void UMyHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		timer = 0;
 		Heal(AutoRecoveryHealAmount);
 	}
-	// ...
 }
 
 
