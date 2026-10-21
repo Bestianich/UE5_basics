@@ -23,6 +23,7 @@ void AHittableActor::BeginPlay()
 	Super::BeginPlay();
 	HitCounter = 0;
 	OnHit.AddDynamic(this , &AHittableActor::Hit);
+	SpawnNewBall();
 }
 
 // Called every frame
@@ -44,13 +45,13 @@ void AHittableActor::Hit()
 void AHittableActor::SpawnNewBall()
 {
 	auto max = BallSpawnPoints.Num();
-	auto index =  FMath::RandRange(0 , max);
+	auto index =  FMath::RandRange(0 , max-1);
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green,  "Max: " + FString::FromInt(max) + " Index: " + FString::FromInt(index));
-	if (IsValid(BallSpawnPoints[index]))
-		return;
+	// if (IsValid(BallSpawnPoints[index]))
+	// 	return;
 	auto spawnLocation = BallSpawnPoints[index]->GetActorLocation();
 	auto spawnRotation = BallSpawnPoints[index]->GetActorRotation();
-	GetWorld()->SpawnActor<AActor>(BallToSpawn , spawnLocation , spawnRotation);
+	CurrentBall = GetWorld()->SpawnActor<AActor>(BallToSpawn , spawnLocation , spawnRotation);
 }
 
 

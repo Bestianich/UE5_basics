@@ -29,6 +29,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> BallToSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* CurrentBall;
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnHitDelegate OnHit;
