@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "InputAction.h"
 #include "Camera/CameraComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MyCharacter.generated.h"
 
@@ -41,6 +42,28 @@ public:
 	
 	UPROPERTY(VisibleAnywhere , BlueprintReadWrite)
 	UMyHealthComponent* HealthComp;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USceneComponent* StartFire;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* Ball;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float StealRange = 1000;
+	
+	UFUNCTION(BlueprintCallable)
+	void TryStealBall();
+	
+	UFUNCTION(BlueprintCallable)
+	void StealBall(AMyCharacter* Character);
+	
+	UFUNCTION(BlueprintCallable)
+	void LoseBall();
+	
+	
+	UFUNCTION(BlueprintCallable)
+	void FireFromWeapon();
 
 protected:
 	// Called when the game starts or when spawned
@@ -78,6 +101,8 @@ protected:
 
 	virtual void NotifyControllerChanged() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HasBall = false;
 
 public:	
 	// Called every frame
