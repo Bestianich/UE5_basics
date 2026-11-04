@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HittableComponent.h"
 #include "Components/TimelineComponent.h"
 #include "UE5_basics/Public/MyHealthComponent.h"
 #include "GameFramework/Character.h"
@@ -46,18 +47,22 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* StartFire;
 	
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* Ball;
+	AActor* Ball;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	USceneComponent* BallLocation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UHittableComponent* HittableComponent;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float StealRange = 1000;
 	
 	
 	UFUNCTION(BlueprintCallable)
-	void TryStealBall();
-	
-	UFUNCTION(BlueprintCallable)
-	void StealBall(AMyCharacter* Character);
+	void GetBall(AActor* TargetBall);
 	
 	UFUNCTION(BlueprintCallable)
 	void LoseBall();
@@ -65,6 +70,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void FireFromWeapon();
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetHasBall();
 
 protected:
 	// Called when the game starts or when spawned

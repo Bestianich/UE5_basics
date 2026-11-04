@@ -40,19 +40,24 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentHealth();
+	
+	UFUNCTION(BlueprintCallable)
+	void BaseGetDamage(AActor* Striker);
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
-	UFUNCTION(BlueprintCallable)
-	void GetDamage(int amount);
 
+	UFUNCTION(BlueprintCallable)
+	void GetDamage(int amount = 10);
 	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int amount);
 	
-private:
+	UPROPERTY(BlueprintReadOnly , EditAnywhere)
 	int currentHealth;
+private:
 	float timer = 0;
 
 public:	

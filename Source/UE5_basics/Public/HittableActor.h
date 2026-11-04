@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HittableComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "HittableActor.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHitDelegate);
 
 UCLASS()
 class UE5_BASICS_API AHittableActor : public AActor
@@ -19,7 +19,7 @@ public:
 	AHittableActor();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBoxComponent* BoxComponent;
+	UHittableComponent* HittableComponent;
 	
 	UPROPERTY(EditAnywhere , BlueprintReadWrite)
 	int HitCounter = 0;
@@ -33,11 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* CurrentBall;
 	
-	UPROPERTY(BlueprintAssignable)
-	FOnHitDelegate OnHit;
 	
 	UFUNCTION(BlueprintCallable)
-	void Hit();
+	void RegisterScore(AActor* Striker);
 	UFUNCTION(BlueprintCallable)
 	void SpawnNewBall();
 

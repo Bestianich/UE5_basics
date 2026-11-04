@@ -41,12 +41,17 @@ void UMyHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 }
 
 
+void UMyHealthComponent::BaseGetDamage(AActor* Striker)
+{
+	GetDamage(10);
+}
+
 void UMyHealthComponent::GetDamage(int amount)
 {
 	if (amount != 0)
 	{
 		const auto damage = FMath::Abs(amount);
-		currentHealth = FMath::Clamp(currentHealth - amount, 0, MaxHealth);
+		currentHealth = FMath::Clamp(currentHealth - damage, 0, MaxHealth);
 		OnDamageTaken.Broadcast();
 		timer = 0;
 	}

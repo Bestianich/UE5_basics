@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "HittableActor.h"
+#include "HittableComponent.h"
 #include "InputMappingContext.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -43,16 +44,17 @@ AMyCharacter::AMyCharacter()
 	HealthComp = CreateDefaultSubobject<UMyHealthComponent>(FName("Health Component"));
 	StartFire = CreateDefaultSubobject<USceneComponent>(FName("StartFire"));
 	
-	Ball = CreateDefaultSubobject<UStaticMeshComponent>(FName("Ball"));
-	Ball->SetupAttachment(RootComponent);
+	BallLocation = CreateDefaultSubobject<USceneComponent>(FName("BallLocation"));
+	
+	HittableComponent = CreateDefaultSubobject<UHittableComponent>(FName("HittableComponent"));
+	
+	//HittableComponent->OnHit.AddDynamic(HealthComp , &UMyHealthComponent::BaseGetDamage);
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Ball->SetVisibility(HasBall);
 	
 	if(MovementCurve)
 	{
@@ -75,52 +77,24 @@ void AMyCharacter::Tick(float DeltaTime)
 }
 
 
-void AMyCharacter::TryStealBall()
-{
-	FCollisionQueryParams Params;
-	const auto MyWorld = GetWorld();
-	if (!IsValid(MyWorld))
-		return;
-	
-	Params.AddIgnoredActor(UGameplayStatics::GetPlayerPawn(MyWorld, 0));
-	FHitResult Hit;
-	
-	FVector StartLocation = FollowCamera->GetComponentLocation();
-	FVector EndLocation = StartLocation + (FollowCamera->GetForwardVector() * StealRange);
-	
-	bool bHit = MyWorld->LineTraceSingleByChannel(Hit, StartLocation, EndLocation,ECC_Camera , Params);
-	DrawDebugLine(MyWorld, StartLocation, EndLocation, FColor::Red, false, 0.0f, 0, 1.0f);
-
-	if (!bHit)
-		return;
-	
-	auto hittedActor = Cast<AMyCharacter>(Hit.GetActor());
-	
-	if (!IsValid(hittedActor))
-		return;
-	
-	if (!hittedActor->HasBall)
-	{	
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Niente da rubare!!");
-		return;
-	}
-	
-	StealBall(hittedActor);
-}
-
-void AMyCharacter::StealBall(AMyCharacter* Character)
-{
-	if (IsValid(Character))
-		Character->LoseBall();
-	HasBall = true;
-	Ball->SetVisibility(true);
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Rubato!!");
-}
 
 void AMyCharacter::LoseBall()
 {
+	
+	if (!HasBall)
+		return;
 	HasBall = false;
-	Ball->SetVisibility(false);
+	
+	Ball->SetActorLocation(BallLocation->GetComponentLocation() + BallLocation->GetForwardVector() * 100.f);
+	Ball = nullptr;
+	
+}
+
+void AMyCharacter::GetBall(AActor* TargetBall)
+{
+	HasBall = true;
+	this->Ball = TargetBall;
+	this->Ball->SetActorLocation(BallLocation->GetComponentLocation());
 }
 
 void AMyCharacter::FireFromWeapon()
@@ -147,16 +121,23 @@ void AMyCharacter::FireFromWeapon()
 	if (!bHit)
 		return;
 	
-	auto hittedActor = Cast<AHittableActor>(Hit.GetActor());
 	
-	if (!IsValid(hittedActor))
+	
+	AActor* HitActor = Hit.GetActor();
+	
+	UHittableComponent* hittableComp = HitActor->FindComponentByClass<UHittableComponent>();
+	
+	if (!IsValid(hittableComp))
 		return;
 	
-	if (!HasBall)
-		return;
 	
-	hittedActor->Hit();
-	LoseBall();
+	hittableComp->OnHit.Broadcast(this);
+	//LoseBall();
+}
+
+bool AMyCharacter::GetHasBall()
+{
+	return HasBall;
 }
 #pragma region Movement
 

@@ -3,7 +3,9 @@
 
 #include "HittableActor.h"
 
+#include "HittableComponent.h"
 #include "MathUtil.h"
+#include "MyCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -12,9 +14,8 @@ AHittableActor::AHittableActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(FName("BoxComponent"));
 	
-	
+	HittableComponent = CreateDefaultSubobject<UHittableComponent>(FName("HittableComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -22,7 +23,7 @@ void AHittableActor::BeginPlay()
 {
 	Super::BeginPlay();
 	HitCounter = 0;
-	OnHit.AddDynamic(this , &AHittableActor::Hit);
+	HittableComponent->OnHit.AddDynamic(this , &AHittableActor::RegisterScore);
 	SpawnNewBall();
 }
 
@@ -34,14 +35,22 @@ void AHittableActor::Tick(float DeltaTime)
 }
 
 
-void AHittableActor::Hit()
+void AHittableActor::RegisterScore(AActor* Striker)
 {
 	//OnHit.Broadcast();
+	
+	if (!IsValid(Striker))
+		return;
+	auto myCharacter = Cast<AMyCharacter>(Striker);
+	if (!IsValid(myCharacter) || !myCharacter->GetHasBall())
+		return;
 	HitCounter++;
+	myCharacter->Ball->Destroy();
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Hittato!! %d" + FString::FromInt(HitCounter));
 	SpawnNewBall();
 }
 
+ 
 void AHittableActor::SpawnNewBall()
 {
 	auto max = BallSpawnPoints.Num();
