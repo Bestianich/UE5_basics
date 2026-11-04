@@ -52,6 +52,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float StealRange = 1000;
 	
+	
 	UFUNCTION(BlueprintCallable)
 	void TryStealBall();
 	

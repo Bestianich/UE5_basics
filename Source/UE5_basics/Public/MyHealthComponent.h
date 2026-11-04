@@ -38,6 +38,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float RecoveryTime = 2.f;
 
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentHealth();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -45,8 +47,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void GetDamage(int amount);
 
-	UFUNCTION(BlueprintCallable)
-	int GetCurrentHealth();
 	
 	UFUNCTION(BlueprintCallable)
 	void Heal(int amount);

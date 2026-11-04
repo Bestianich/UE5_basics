@@ -125,6 +125,10 @@ void AMyCharacter::LoseBall()
 
 void AMyCharacter::FireFromWeapon()
 {
+	
+	if (HealthComp->GetCurrentHealth() <= 0)
+		return;
+	
 	FCollisionQueryParams Params;
 	const auto MyWorld = GetWorld();
 	if (!IsValid(MyWorld))
