@@ -21,6 +21,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxComponent;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AActor*> ActorsInside;
+	
 	void TimerCallback();
 
 protected:

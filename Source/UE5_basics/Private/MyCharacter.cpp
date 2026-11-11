@@ -56,6 +56,8 @@ void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	HittableComponent->OnHit.AddDynamic(HealthComp , &UMyHealthComponent::BaseGetDamage);
+	
 	if(MovementCurve)
 	{
 		FOnTimelineFloat ProgressFunctionLength;
@@ -92,9 +94,22 @@ void AMyCharacter::LoseBall()
 
 void AMyCharacter::GetBall(AActor* TargetBall)
 {
+	if (HasBall)
+		return;
 	HasBall = true;
 	this->Ball = TargetBall;
-	this->Ball->SetActorLocation(BallLocation->GetComponentLocation());
+	FAttachmentTransformRules Rules(
+		EAttachmentRule::SnapToTarget,   // Location
+		EAttachmentRule::SnapToTarget,   // Rotation
+		EAttachmentRule::KeepRelative,   // Scale
+		true                             // Weld simulated bodies
+	);
+	this->Ball->AttachToComponent(
+		GetMesh(),
+		Rules,
+		FName("hand_rBallSocket"));
+	
+	//this->Ball->SetActorLocation(BallLocation->GetComponentLocation() + this->GetActorLocation());
 }
 
 void AMyCharacter::FireFromWeapon()

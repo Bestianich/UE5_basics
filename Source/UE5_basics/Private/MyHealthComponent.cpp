@@ -48,18 +48,16 @@ void UMyHealthComponent::BaseGetDamage(AActor* Striker)
 
 void UMyHealthComponent::GetDamage(int amount)
 {
-	if (amount != 0)
-	{
-		const auto damage = FMath::Abs(amount);
-		currentHealth = FMath::Clamp(currentHealth - damage, 0, MaxHealth);
-		OnDamageTaken.Broadcast();
-		timer = 0;
-	}
-	
+	if (amount  == 0)
+		return;
+
+	const auto damage = FMath::Abs(amount);
+	currentHealth = FMath::Clamp(currentHealth - damage, 0, MaxHealth);
+	OnDamageTaken.Broadcast();
+	timer = 0;
+
 	if (currentHealth <= 0)
-	{
 		OnHealthZero.Broadcast();
-	}
 }
 
 int UMyHealthComponent::GetCurrentHealth()
