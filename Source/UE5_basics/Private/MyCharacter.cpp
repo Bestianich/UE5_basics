@@ -58,7 +58,6 @@ void AMyCharacter::BeginPlay()
 	
 	HittableComponent->OnHit.AddDynamic(HealthComp , &UMyHealthComponent::BaseGetDamage);
 	HittableComponent->OnHit.AddDynamic(this , &AMyCharacter::LoseBall);
-	
 	if(MovementCurve)
 	{
 		FOnTimelineFloat ProgressFunctionLength;
@@ -75,15 +74,23 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AimTimeline.TickTimeline(DeltaTime);
+	if (HasBall)
+	{	
+		_timer += DeltaTime;
+		if (_timer > LoseStaminaTick)
+		{
+			LoseStamina();
+			_timer = 0.0f;
+		}	
+	}
 }
 
 
 void AMyCharacter::LoseBall(AActor* Striker)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Perdo!!!!!" + HasBall);
 	if (!HasBall)
 		return;
-	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Perdo!!!!!" + HasBall);
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Perdo!!!!!");
 	HasBall = false;
 	Ball->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	if (IsValid(Striker))
@@ -154,6 +161,13 @@ bool AMyCharacter::GetHasBall()
 {
 	return HasBall;
 }
+
+
+void AMyCharacter::LoseStamina()
+{
+	HealthComp->GetDamage(LostStaminaOverTime);
+}
+
 #pragma region Movement
 
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

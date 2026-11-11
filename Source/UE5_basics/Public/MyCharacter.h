@@ -61,6 +61,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	float StealRange = 1000;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float LoseStaminaTick = 2.f;
+	
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int LostStaminaOverTime = 1;
 	
 	UFUNCTION(BlueprintCallable)
 	void GetBall(AABall* TargetBall);
@@ -75,6 +81,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetHasBall();
 
+	UFUNCTION(BlueprintCallable)
+	void LoseStamina();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -146,4 +154,6 @@ private:
 	
 	UFUNCTION()
 	void HandleProgressCameraOffset(FVector Offset);
+	
+	float _timer = 0.0f;
 };
