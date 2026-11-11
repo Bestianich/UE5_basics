@@ -57,6 +57,7 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	HittableComponent->OnHit.AddDynamic(HealthComp , &UMyHealthComponent::BaseGetDamage);
+	HittableComponent->OnHit.AddDynamic(this , &AMyCharacter::LoseBall);
 	
 	if(MovementCurve)
 	{
@@ -74,25 +75,24 @@ void AMyCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	AimTimeline.TickTimeline(DeltaTime);
-	
-
 }
 
 
-
-void AMyCharacter::LoseBall()
+void AMyCharacter::LoseBall(AActor* Striker)
 {
-	
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Perdo!!!!!" + HasBall);
 	if (!HasBall)
 		return;
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Perdo!!!!!" + HasBall);
 	HasBall = false;
-	
-	Ball->SetActorLocation(BallLocation->GetComponentLocation() + BallLocation->GetForwardVector() * 100.f);
+	Ball->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	if (IsValid(Striker))
+		Ball->SetActorLocation(GetActorLocation() + GetActorLocation().ForwardVector * 500.f );
 	Ball = nullptr;
 	
 }
 
-void AMyCharacter::GetBall(AActor* TargetBall)
+void AMyCharacter::GetBall(AABall* TargetBall)
 {
 	if (HasBall)
 		return;

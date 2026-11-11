@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ABall.h"
 #include "HittableComponent.h"
 #include "Components/TimelineComponent.h"
 #include "UE5_basics/Public/MyHealthComponent.h"
@@ -49,7 +50,7 @@ public:
 	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* Ball;
+	AABall* Ball;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* BallLocation;
@@ -62,10 +63,10 @@ public:
 	
 	
 	UFUNCTION(BlueprintCallable)
-	void GetBall(AActor* TargetBall);
+	void GetBall(AABall* TargetBall);
 	
 	UFUNCTION(BlueprintCallable)
-	void LoseBall();
+	void LoseBall(AActor* Striker);
 	
 	
 	UFUNCTION(BlueprintCallable)

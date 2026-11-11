@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ABall.h"
 #include "HittableComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
@@ -31,7 +32,7 @@ public:
 	TSubclassOf<AActor> BallToSpawn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* CurrentBall;
+	AABall* CurrentBall;
 	
 	
 	UFUNCTION(BlueprintCallable)

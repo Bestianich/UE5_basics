@@ -45,8 +45,8 @@ void AHittableActor::RegisterScore(AActor* Striker)
 	if (!IsValid(myCharacter) || !myCharacter->GetHasBall())
 		return;
 	HitCounter++;
-	myCharacter->Ball->Destroy();
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Hittato!! %d" + FString::FromInt(HitCounter));
+	myCharacter->LoseBall(nullptr);
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Hittato!! %d" + FString::FromInt(HitCounter));
 	SpawnNewBall();
 }
 
@@ -60,7 +60,11 @@ void AHittableActor::SpawnNewBall()
 	// 	return;
 	auto spawnLocation = BallSpawnPoints[index]->GetActorLocation();
 	auto spawnRotation = BallSpawnPoints[index]->GetActorRotation();
-	CurrentBall = GetWorld()->SpawnActor<AActor>(BallToSpawn , spawnLocation , spawnRotation);
+	if (!IsValid(CurrentBall))
+		CurrentBall = GetWorld()->SpawnActor<AABall>(BallToSpawn , spawnLocation , spawnRotation);
+	CurrentBall->SetActorLocation(spawnLocation);
+	CurrentBall->ToggleCollision(true);
+	
 }
 
 
