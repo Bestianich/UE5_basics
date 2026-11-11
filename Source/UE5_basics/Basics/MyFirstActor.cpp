@@ -3,8 +3,7 @@
 
 #include "MyFirstActor.h"
 
-#include <iostream>
-#include <ostream>
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMyFirstActor::AMyFirstActor()
@@ -51,10 +50,7 @@ void AMyFirstActor::OnBeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	{
 		return;
 	}
-
-	OtherActor->OnDestroyed.AddDynamic(this , &AMyFirstActor::OnActorInsideDestroyed);
-	ActorsInside.Add(OtherActor);
-
+	
 	UClass* OtherActorClass = OtherActor->GetClass();
 	for(auto& SensedClass : SensedCharacterClasses)
 	{
@@ -125,21 +121,7 @@ void AMyFirstActor::Tick(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(8967444, 2.f, FColor::Blue, "world time: "+FString::SanitizeFloat(GetWorld()->TimeSeconds));
 }
 
-void AMyFirstActor::OnActorInsideDestroyed(AActor* ActorDestroyed)
+void AMyFirstActor::TimerCallback()
 {
-	ActorsInside.Remove(ActorDestroyed);
+	GEngine->AddOnScreenDebugMessage(896745, 2.f, FColor::Green, FString::Printf(TEXT("world time: %f"), GetWorld()->TimeSeconds));
 }
-
-void AMyFirstActor::PrintActorsInside()
-{
-	FString ActorsInsideString = "";
-	for(auto Actor : ActorsInside)
-	{
-		ActorsInsideString += Actor->GetName() + " ";
-	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Debug ActorsInside: " + ActorsInsideString);
-
-		
-}
-
